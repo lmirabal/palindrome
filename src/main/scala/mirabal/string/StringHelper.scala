@@ -6,28 +6,30 @@ object StringHelper {
 
     import StringPalindrome.MinLength
 
-    def findPalindromes: Set[String] = {
-      findPalindromes(value, value, Set.empty)
+    def findPalindromes: Set[PalindromeResult] = {
+      findPalindromes(0, value.length, Set.empty)
     }
 
     def isPalindrome: Boolean = value.equals(value.reverse)
 
-    private def findPalindromes(current: String, remaining: String, acc: Set[String]): Set[String] = {
-      if (remaining.length < MinLength) acc
-      else if (current.length < MinLength) {
-        val updatedRemaining = remaining.tail
-        findPalindromes(updatedRemaining, updatedRemaining, acc)
+    private def findPalindromes(begin: Int, end: Int, acc: Set[PalindromeResult]): Set[PalindromeResult] = {
+      val currentLength = end - begin
+      if (currentLength < MinLength) return acc
+      
+      val current = value.substring(begin, end)
+      if (current.isPalindrome) {
+        val result = PalindromeResult(current, begin, currentLength)
+        findPalindromes(begin + current.length, value.length, acc + result)
       }
-      else if (current.isPalindrome) {
-        val updatedRemaining = remaining.drop(current.length)
-        findPalindromes(updatedRemaining, updatedRemaining, acc + current)
-      }
-      else findPalindromes(current.init, remaining, acc)
+      else if (currentLength == MinLength) findPalindromes(begin + 1, value.length, acc)
+      else findPalindromes(begin, end - 1, acc)
     }
   }
 
   object StringPalindrome {
     private val MinLength = 3
   }
+
+  case class PalindromeResult(value: String, index: Int, length: Int)
 
 }
