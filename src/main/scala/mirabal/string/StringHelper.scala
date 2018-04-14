@@ -8,8 +8,8 @@ object StringHelper {
 
     import StringPalindrome.{MinLength, OrderByLengthDescIndexAsc}
 
-    def findPalindromes: List[PalindromeResult] = {
-      findPalindromes(0, value.length, SortedSet.empty(OrderByLengthDescIndexAsc)).toList
+    def findPalindromes(max: Int = Int.MaxValue): List[PalindromeResult] = {
+      findPalindromes(0, value.length, SortedSet.empty(OrderByLengthDescIndexAsc)).take(max).toList
     }
 
     def isPalindrome: Boolean = value.equals(value.reverse)
