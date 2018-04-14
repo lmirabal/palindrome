@@ -1,13 +1,15 @@
 package mirabal.string
 
+import scala.collection.SortedSet
+
 object StringHelper {
 
   implicit class StringPalindrome(value: String) {
 
-    import StringPalindrome.MinLength
+    import StringPalindrome.{MinLength, OrderByLengthDescIndexAsc}
 
-    def findPalindromes: Set[PalindromeResult] = {
-      findPalindromes(0, value.length, Set.empty)
+    def findPalindromes: List[PalindromeResult] = {
+      findPalindromes(0, value.length, SortedSet.empty(OrderByLengthDescIndexAsc)).toList
     }
 
     def isPalindrome: Boolean = value.equals(value.reverse)
@@ -15,7 +17,7 @@ object StringHelper {
     private def findPalindromes(begin: Int, end: Int, acc: Set[PalindromeResult]): Set[PalindromeResult] = {
       val currentLength = end - begin
       if (currentLength < MinLength) return acc
-      
+
       val current = value.substring(begin, end)
       if (current.isPalindrome) {
         val result = PalindromeResult(current, begin, currentLength)
@@ -28,6 +30,7 @@ object StringHelper {
 
   object StringPalindrome {
     private val MinLength = 3
+    private val OrderByLengthDescIndexAsc = Ordering[(Int, Int)].on[PalindromeResult](r => (-r.length, r.index))
   }
 
   case class PalindromeResult(value: String, index: Int, length: Int)
